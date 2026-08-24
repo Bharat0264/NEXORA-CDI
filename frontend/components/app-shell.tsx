@@ -1,47 +1,11 @@
-import Link from "next/link";
+"use client";
 
-const navigation = [
-  ["Overview", "/"],
-  ["Data", "/data"],
-  ["Analytics", "/analytics"],
-  ["ML Lab", "/ml-lab"],
-  ["Causal Lab", "/causal-lab"],
-  ["Scenarios", "/scenarios"],
-  ["AI Investigator", "/ai-investigator"],
-  ["Decisions", "/decisions"],
-  ["Experiments", "/experiments"],
-] as const;
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const navigation = [["Executive overview", "/"], ["Data foundation", "/data"], ["Analytics", "/analytics"], ["ML studio", "/ml-lab"], ["Causal lab", "/causal-lab"], ["Scenarios", "/scenarios"], ["AI investigator", "/ai-investigator"], ["Decision register", "/decisions"], ["Experiments", "/experiments"]] as const;
 
 export function AppShell({ children }: Readonly<{ children: React.ReactNode }>) {
-  return (
-    <div className="min-h-screen bg-[#08111f] md:grid md:grid-cols-[252px_1fr]">
-      <aside className="border-b border-[#22314a] bg-[#0b1627] p-6 md:min-h-screen md:border-b-0 md:border-r">
-        <Link href="/" className="block text-lg font-semibold tracking-[0.08em] text-white">NEXORA-CDI</Link>
-        <p className="mt-2 max-w-[170px] text-xs leading-5 text-slate-400">Evidence-Calibrated Decision Intelligence</p>
-        <nav className="mt-9 flex gap-1 overflow-x-auto md:flex-col md:gap-2" aria-label="Primary navigation">
-          {navigation.map(([label, href]) => (
-            <Link key={href} href={href} className="whitespace-nowrap rounded-lg px-3 py-2.5 text-sm text-slate-300 transition-colors hover:bg-[#17263c] hover:text-white">
-              {label}
-            </Link>
-          ))}
-        </nav>
-        <a
-          href="https://github.com/Bharat0264/NEXORA---CDI"
-          target="_blank"
-          rel="noreferrer"
-          className="mt-8 flex items-center gap-2 rounded-lg border border-[#22314a] px-3 py-2.5 text-sm text-slate-300 transition-colors hover:border-cyan-800 hover:bg-[#17263c] hover:text-white"
-        >
-          <span aria-hidden="true">↗</span>
-          View on GitHub
-        </a>
-      </aside>
-      <main>
-        <header className="flex h-16 items-center justify-between border-b border-[#22314a] bg-[#0b1627]/80 px-6 backdrop-blur md:px-10">
-          <span className="text-sm text-slate-400">Research workspace</span>
-          <span className="rounded-full border border-emerald-800/70 bg-emerald-950/50 px-3 py-1 text-xs text-emerald-300">Evidence-first</span>
-        </header>
-        <section className="mx-auto w-full max-w-[1440px] p-6 md:p-10">{children}</section>
-      </main>
-    </div>
-  );
+  const pathname = usePathname();
+  return <div className="min-h-screen bg-[#f4f7fb] text-[#101828] md:grid md:grid-cols-[278px_1fr]"><aside className="app-sidebar"><Link href="/" className="brand"><span className="brand-mark">N</span><span>NEXORA <small>CDI</small></span></Link><p className="brand-caption">Evidence-calibrated decision intelligence</p><nav aria-label="Primary navigation">{navigation.map(([label, href], index) => <Link key={href} href={href} className={pathname === href ? "nav-link active" : "nav-link"}><span className="nav-index">{String(index + 1).padStart(2, "0")}</span>{label}</Link>)}</nav><div className="sidebar-foot"><span className="status-dot" />Evidence-first workspace</div><a href="https://github.com/Bharat0264/NEXORA---CDI" target="_blank" rel="noreferrer" className="github-link">View project source <span aria-hidden="true">-&gt;</span></a></aside><main className="app-main"><header className="app-topbar"><div><span className="topbar-kicker">RESEARCH WORKSPACE</span><span className="topbar-title">Decision intelligence platform</span></div><div className="topbar-user"><span className="topbar-avatar">N</span><span>Local workspace</span></div></header><section className="app-content">{children}</section></main></div>;
 }
