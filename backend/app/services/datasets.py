@@ -8,7 +8,19 @@ from app.services.storage import LocalDatasetStorage
 
 def read_dataset(path: Path) -> pd.DataFrame:
     if path.suffix.lower() == ".csv":
-        return pd.read_csv(path)
+        # CSV files exported from Excel and regional business tools commonly use
+        # a BOM, Windows encoding, or a semicolon/tab separator. Let pandas infer
+        # the delimiter while trying the common encodings before rejecting a file.
+        errors: list[Exception] = []
+        for encoding in ("utf-8-sig", "utf-8", "utf-16", "cp1252", "latin-1"):
+            try:
+                frame = pd.read_csv(path, encoding=encoding, sep=None, engine="python")
+                if frame.empty and len(frame.columns) == 0:
+                    raise ValueError("The CSV has no columns.")
+                return frame
+            except (UnicodeError, UnicodeDecodeError, pd.errors.ParserError, ValueError) as exc:
+                errors.append(exc)
+        raise ValueError("The CSV could not be decoded or parsed.") from errors[-1]
     if path.suffix.lower() in {".xlsx", ".xls"}:
         return pd.read_excel(path)
     raise HTTPException(status_code=415, detail="Only CSV and XLSX files are supported.")

@@ -17,6 +17,14 @@ def test_csv_ingestion(tmp_path: Path) -> None:
     assert read_dataset(path).shape == (3, 4)
 
 
+def test_csv_ingestion_accepts_excel_style_delimiters(tmp_path: Path) -> None:
+    path = tmp_path / "regional-export.csv"
+    path.write_text("region;revenue\nNorth;100\nSouth;200\n", encoding="utf-8-sig")
+    frame = read_dataset(path)
+    assert frame.columns.tolist() == ["region", "revenue"]
+    assert frame.shape == (2, 2)
+
+
 def test_type_inference_and_profile() -> None:
     profile = profile_dataframe(fixture_frame())
     assert infer_column_type(fixture_frame()["revenue"]) == "numeric"
