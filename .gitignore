@@ -21,6 +21,7 @@ venv/
 
 # Local data and generated research outputs
 datasets/raw/
+storage/
 model_artifacts/
 experiment_outputs/
 experiments/results/
